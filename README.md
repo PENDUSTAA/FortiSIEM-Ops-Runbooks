@@ -13,7 +13,8 @@ All IPs, hostnames, collector names, org IDs and customer paths are placeholders
 | `elasticsearch/cheatsheet.md` | Cluster layout, every ES command we used (health, recovery, reroute, throttle, ILM, templates, snapshots) |
 | `elasticsearch/audit-and-recovery.sh` | Quick read-only status script |
 | `fortisiem/phoenix-drop-monitoring.md` | Reading Phoenix stats: drop counters, `hwm`, rejections, collector buffers |
-| `infra/hyperv-storage-checklist.md` | Hyper-V / VM / disk / SAN-style storage review checklist |
+| `infra/hyperv-storage-checklist.md` | Hyper-V / VM / disk storage review checklist |
+| `infra/san-storage-checklist.md` | SAN / shared storage (LUN, MPIO, CSV, latency) checklist |
 | `scripts/` | Cluster audit (A), per-node audit (B), Phoenix check, hot-node shard delta, Linux host diagnostics |
 | `linux-agent/` | auditd sendmail warning, SELinux (agent tmp + rsyslog imfile), rsyslog local6, FIM/template notes, logrotate |
 | `templates/` | Vendor support email, customer message |

@@ -17,4 +17,5 @@ All IPs, hostnames, collector names, org IDs and customer paths are placeholders
 | `infra/san-storage-checklist.md` | SAN / shared storage (LUN, MPIO, CSV, latency) checklist |
 | `scripts/` | Cluster audit (A), per-node audit (B), Phoenix check, hot-node shard delta, Linux host diagnostics |
 | `linux-agent/` | auditd sendmail warning, SELinux (agent tmp + rsyslog imfile), rsyslog local6, FIM/template notes, logrotate |
+| `docs/fortinet-references.md` | Links to Fortinet / Elastic documentation with short notes |
 | `templates/` | Vendor support email, customer message |

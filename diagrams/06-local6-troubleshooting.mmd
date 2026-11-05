@@ -1,0 +1,13 @@
+flowchart TD
+  S["App logs intermittent / missing after<br/>stopping local6 -> messages"] --> Q1{"Urgent?"}
+  Q1 -- yes --> RB["Restore rsyslog backup<br/>rsyslogd -N1, restart"]
+  Q1 -- no --> C1["scripts/linux-host-diag.sh"]
+  C1 --> Q2{"rsyslogd -N1 OK?"}
+  Q2 -- no --> F1["Fix config; orphaned '&' forward line?"]
+  Q2 -- yes --> Q3{"AVC for in:imfile?"}
+  Q3 -- yes --> F2["setsebool -P logging_syslogd_list_non_security_dirs on<br/>re-check AVC count = 0"]
+  Q3 -- no --> Q4{"auditd/rsyslog restarted?<br/>NRestarts / timestamps"}
+  Q4 -- yes --> F3["Find trigger: FIM/template change"]
+  Q4 -- no --> Q5{"rate-limit / suppressed?"}
+  Q5 -- yes --> F4["Raise rsyslog / journald limits"]
+  Q5 -- no --> F5["logger -p local6.info test<br/>search FortiSIEM for it"]

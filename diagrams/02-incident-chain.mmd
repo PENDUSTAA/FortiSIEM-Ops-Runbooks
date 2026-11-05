@@ -1,0 +1,19 @@
+flowchart TD
+  A["hot-3 / hot-5 / hot-6 on 1 vCPU"] --> B["Bulk load saturates CPU<br/>write pool = 1 thread"]
+  B --> C["FsHealth stalls up to ~25 s"]
+  C --> D["Master contact lost<br/>election storms"]
+  D --> E["Nodes without master<br/>reject writes"]
+  E --> F["Worker bulk 'took' ~60 s timeout"]
+  F --> G["hwm(y) backpressure<br/>reject upload, status 550"]
+  G --> H["Collector buffers grow (GB)"]
+  F --> I["Events dropped<br/>drop counter rises"]
+  subgraph Fix
+    X1["Resize to 8 vCPU"]
+    X2["Recovery throttle 100 -> 200 MB/s"]
+    X3["Pause rebalance, move heavy shard<br/>hot-6 -> hot-1"]
+    X4["Restore rebalance = all"]
+    X5["Verify: green, queues 0,<br/>hwm(n), flat drop counters"]
+    X1 --> X2 --> X3 --> X4 --> X5
+  end
+  A -. "remediated by" .-> X1
+  X5 --> J["Buffers drain to ~0"]

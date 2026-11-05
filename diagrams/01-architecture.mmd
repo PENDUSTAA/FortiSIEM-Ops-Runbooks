@@ -1,0 +1,39 @@
+flowchart LR
+  subgraph Sources
+    LA["Linux hosts<br/>FortiSIEM agent + rsyslog"]
+    OT["Network / other devices<br/>syslog UDP 514"]
+  end
+  subgraph Collectors
+    C1["Collector A"]
+    C2["Collector B"]
+    C3["Collector N"]
+  end
+  subgraph FortiSIEM
+    SUP["Supervisor<br/>192.0.2.5"]
+    W1["Worker 1<br/>192.0.2.6"]
+    W2["Worker 2<br/>192.0.2.7"]
+  end
+  subgraph ES["Elasticsearch fsm-cluster (7.17)"]
+    COORD["coord-1<br/>voting-only + ingest<br/>192.0.2.11"]
+    M["master<br/>192.0.2.10"]
+    H1["hot-1 32 vCPU"]
+    H2["hot-2 16 vCPU"]
+    H3["hot-3 8 vCPU"]
+    H4["hot-4 16 vCPU"]
+    H5["hot-5 8 vCPU"]
+    H6["hot-6 8 vCPU"]
+  end
+  subgraph HV["Hyper-V hosts + SAN / shared storage"]
+    ST[("VHDX on LUNs")]
+  end
+  LA -- "HTTPS 443 /linuxupload" --> C1
+  OT -- "syslog" --> C2
+  C1 --> W1
+  C2 --> W2
+  C3 --> SUP
+  W1 -- "bulk" --> COORD
+  W2 -- "bulk" --> COORD
+  SUP -- "bulk / query" --> COORD
+  COORD --> H1 & H2 & H3 & H4 & H5 & H6
+  M -. "cluster state" .- COORD
+  H1 & H2 & H3 & H4 & H5 & H6 -.-> ST

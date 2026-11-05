@@ -1,0 +1,12 @@
+flowchart TD
+  S["Write pool saturated on one node<br/>active == size, queue growing"] --> D["Find hottest shard<br/>scripts/hot-node-delta.sh"]
+  D --> P["Pause rebalance<br/>rebalance.enable = none"]
+  P --> M["POST _cluster/reroute move<br/>from hot-6 to hot-1"]
+  M --> W{"_cat/recovery<br/>active_only shows it?"}
+  W -- yes --> W2["Wait (100% may linger<br/>during translog handoff)"]
+  W2 --> W
+  W -- no --> R["Restore rebalance.enable = all"]
+  R --> V["Verify health green,<br/>thread pools idle,<br/>Phoenix hwm(n) + flat drop"]
+  V --> N{"Queue still full?"}
+  N -- yes --> D
+  N -- no --> DONE["Done"]

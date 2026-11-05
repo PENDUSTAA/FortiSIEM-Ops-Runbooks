@@ -1,0 +1,12 @@
+flowchart LR
+  APP["Application<br/>writes files under /appdata"] --> IMF["rsyslog imfile<br/>tags facility local6"]
+  APP2["App via syslog socket"] --> RS["rsyslog rules"]
+  IMF --> RS
+  RS -- "default rule *.info matches local6" --> MSG["/var/log/messages"]
+  RS -- "explicit local6 -> messages rule" --> MSG
+  RS -- "forward rule (omfwd @collector)" --> COL["Collector / FortiSIEM"]
+  AG["FortiSIEM Linux agent<br/>templates: Syslog / Log File / FIM"] -- "HTTPS 443" --> COL
+  AU["auditd + ausearch<br/>(called inside agent library)"] --> AG
+  SEL["SELinux enforcing"] -. "denies list of /appdata<br/>(default_t) to syslogd_t" .-> IMF
+  SEL -. "denies write to agent tmp (usr_t)<br/>fixed by relabel" .-> AG
+  MSG -. "duplicates + setroubleshoot long lines" .- NOISE["Log noise / disk growth"]

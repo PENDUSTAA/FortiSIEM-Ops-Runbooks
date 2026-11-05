@@ -8,6 +8,7 @@ All IPs, hostnames, collector names, org IDs and customer paths are placeholders
 
 | Path | Content |
 |---|---|
+| `docs/diagrams.md` | Architecture, incident chain, shard-move runbook, Linux log paths, sendmail warning, local6 troubleshooting (Mermaid + SVG) |
 | `docs/incident-es-ingestion.md` | Full RCA and timeline of the ES / ingestion incident, losses, fixes, mistakes to avoid |
 | `docs/platform-audit-findings.md` | Audit of ES cluster, VM and storage; prioritized findings and open items |
 | `elasticsearch/cheatsheet.md` | Cluster layout, every ES command we used (health, recovery, reroute, throttle, ILM, templates, snapshots) |

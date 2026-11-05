@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant AG as FortiSIEM agent (libphLinuxAgentUtils.so)
+  participant AS as ausearch
+  participant AC as /etc/audit/auditd.conf
+  participant SM as /usr/lib/sendmail
+  participant LOG as /var/log/messages
+  AG->>AS: run ausearch (stderr not redirected)
+  AS->>AC: read config
+  AC-->>AS: space_left_action = email
+  AS->>SM: is it executable?
+  SM-->>AS: missing
+  AS-->>AG: warning on stderr
+  AG->>LOG: "Email option is specified but /usr/lib/sendmail doesn't seem executable."
+  Note over AC,LOG: Fix: email -> syslog, then kill -HUP auditd. FIM removal does not help.

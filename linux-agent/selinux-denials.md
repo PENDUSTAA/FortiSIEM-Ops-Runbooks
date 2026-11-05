@@ -2,7 +2,15 @@
 
 ## 1. Agent helper tools writing to agent tmp
 - `ethtool` (ifconfig_t), `logrotate` (logrotate_t) denied write on `/opt/fortinet/fortisiem/linux-agent/tmp/*` (label `usr_t`).
-- Fix: relabel the tmp directory (e.g. `semanage fcontext` + `restorecon -Rv`) so confined tools can write.
+- Impact: helper output lost (NIC speed/duplex for discovery), retried 3x within ms; collection itself unaffected.
+- Fix options, smallest first (we relabeled and it settled):
+```bash
+semanage fcontext -a -t tmp_t '/opt/fortinet/fortisiem/linux-agent/tmp(/.*)?'
+restorecon -Rv /opt/fortinet/fortisiem/linux-agent/tmp
+# or review a local module before installing (broad: allows writing usr_t):
+ausearch -m avc -ts today | audit2allow -M fsm_agent_tmp && cat fsm_agent_tmp.te
+```
+- Do not set SELinux permissive. Review: `semodule -l | grep -iE 'fsm|fortisiem|local'`, `ausearch -m avc,user_avc -ts today -i`.
 
 ## 2. rsyslog imfile cannot list an application directory
 - `comm=in:imfile`, `exe=/usr/sbin/rsyslogd`, `scontext=syslogd_t`, target dir `/appdata` (`default_t`), EACCES every ~10 s (imfile poll).
